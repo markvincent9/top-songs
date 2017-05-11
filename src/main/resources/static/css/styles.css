@@ -1,0 +1,8 @@
+.box:hover{
+    background: darkgray; /* make this whatever you want */
+}
+
+.song {
+    padding: 15px 15px 0px 15px;
+    margin: 0 -15px 15px
+}

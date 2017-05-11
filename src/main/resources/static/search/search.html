@@ -1,0 +1,76 @@
+<div class="container">
+    
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Top Songs Database</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a><i class="fa fa-user"></i>Welcome Guest</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <label for="bookSearch">Search Songs: </label>
+            <form class="form-inline">
+                <div class="form-group">
+                    <input id="bookSearch" type="text" size="50" class="form-control" ng-model="vm.query">
+                    <button class="btn btn-default" ng-click="vm.search()">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="panel panel-default" ng-repeat="facet in vm.result.response.facet">
+                <div class="panel-heading">{{facet.name}}</div>
+                <div class="panel-body">
+                    <div ng-repeat="facetValue in facet['facet-value'] | limitTo : facet.show : 0">
+                        <a ng-if="facetValue.content" ng-click="vm.toggleFacet(facet,facetValue.content)">{{facetValue.content}} ({{facetValue.count}})</a>
+                        <span ng-if="$last && facet['facet-value'].length > 10 && facet.show < facet['facet-value'].length"><br/><a ng-click="vm.showMoreFacet(facet)" style="">Show More</a></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="panel panel-default" ng-show="vm.result.response.result">
+                <div class="panel-heading">
+                    Search Results: {{vm.result.response.total}}
+                    <div>
+                        <ul uib-pagination class="pull-right" total-items="vm.totalItems" rotate="true" max-size="5" 
+                            ng-model="vm.currentPage" ng-change="vm.search()" boundary-links="true" force-ellipses="true"></ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="song" ng-repeat="song in vm.result.response.result">
+                        <h5><b>"{{song.metadata.title.content}}"</b> by {{song.metadata.artist.content}}</h5>
+                        <!--<p>Ending week: {{song.metadata['attribute-meta'].content}} (total weeks: {{}})</p>-->
+                        <p>
+                            <span ng-repeat="snippet in song.snippet.match.content track by $index">
+                                {{snippet}}
+                                <span ng-show="!vm.isArray(song.snippet.match.highlight) && $first">
+                                    <mark>{{song.snippet.match.highlight}}</mark>
+                                </span>
+                                <span ng-show="vm.isArray(song.snippet.match.highlight)">
+                                    <mark>{{song.snippet.match.highlight[$index]}}</mark>
+                                </span>
+                            </span>
+                        </p>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
